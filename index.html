@@ -15,37 +15,51 @@
  <script src="spin-js/spin.js"></script>
  <script src="spin-js/jquery.spin.js"></script>
  <script src="http://maps.stamen.com/js/tile.stamen.js"></script>
- <link rel="stylesheet" href="leaflet-sidebar/L.Control.Sidebar.css" />
-    <script src="leaflet-sidebar/L.Control.Sidebar.js"></script>
-	<script src="button/leaflet-button.js"></script>
+<script src="http://www.mapquestapi.com/sdk/leaflet/v2.s/mq-map.js?key=sv99PLA3H8jGWSa1a097UKewBWrNWLWN"></script>
+<script src="http://www.mapquestapi.com/sdk/leaflet/v2.s/mq-geocoding.js?key=sv99PLA3H8jGWSa1a097UKewBWrNWLWN"></script>
+ 
+
+	
 <link rel="stylesheet" href="cai.css" />
 
 
 
-
 <style>
-	
+		
 </style>
 
 </head>				
 	
 <body>
-<div id="menubar">
-<p class='menu-item'><a href="https://creativeassetinventory.github.io/survey">HOME</a>  +</p> <p class='menu-item'><a href="about.html">ABOUT</a>  +</p> <p class='menu-item'>DEFINITIONS  +</p><p class='menu-item'>VOLUNTEER!</p>
-</div>
-<div style="float:left;padding-right:10px;"><img src="sf-logo.png" width="120px" style="float:left"><img src="ct-logo.png" height="120px" style="float:left;"></div>
+
+<div id="iconBar"><img src="sf-logo.png" width="120px" style="float:left"><img src="ct-logo.png" height="120px" style="float:left; padding-right:20px;"></div>
 <div name="titlebar" >
 	<div id="header">
-		<h1 style="color:#fff; margin-top:3px;">CREATIVE ASSETS INVENTORY</h1>
+		<h1 style="color:#fff;">CREATIVE ASSETS INVENTORY</h1>
 	</div>
 </div>
-<button class='btn-primary' style='float:right' onclick=window.open("https://form.jotform.us/72586059140155")>VIEW DIRECTORY</button>
-<button class='btn-primary' style='float:right' onclick=window.open("https://form.jotform.us/72586059140155")>ADD AN ASSET!</button> 
+<div class="topnav" id="topMenu">
+  <a href="survey.html" style="background-color:#ffffcc">Add an Asset!</a>
+  <a href="contact">Get Involved!</a>
+  <a href="definitions.html">Definitions</a>
+  <a href="about.html">About</a>
+    <a href="index.html">Home</a>
+  <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="loadMenu()">&#9776;</a>
+</div>
 
 <div id="spinBox" class='spinner'></div>
 <div id="mapdiv" style="width: 100%; height: 500px;"></div>
 
 <script type="text/javascript">
+
+function loadMenu() {
+    var x = document.getElementById("topMenu");
+    if (x.className === "topnav") {
+        x.className += " responsive";
+    } else {
+        x.className = "topnav";
+    }
+}
 
 var map = L.map('mapdiv',{
   fullscreenControl: true,
@@ -114,41 +128,10 @@ $.getJSON(muniURL,
 			}
 
 
-var spinner = new Spinner().spin(spinBox);
-$('#spinBox').show();			
-$.getJSON(parcelURL,
-            function(data) {
-			
-	        parcelLayer = L.geoJson(data, {
-				style: {weight:1, opacity:.05, color:'#fff', fillOpacity:0, fillColor:'#fff'},
-				interactive: true,
-				onEachFeature: function (feature, layer) {
-					https://form.jotform.us/72586059140155?addressOr[addr_line1]=ADDRESS&addressOr[city]=CITY&addressOr[state]=New%20Jersey&addressOr[postal]=ZIP&lat=88&lng=99
-					addText = feature.properties.address;
-					muni = feature.properties.city;
-					zip = feature.properties.zip;
-					var bounds = layer.getBounds();
-					var lat = bounds.getCenter().lat;
-					var lng = bounds.getCenter().lng;
-					var popupContent = "<b>" + addText + "<br></b>" + muni + "<hr>" +
-						"<h1 style='letter-spacing:0.2em,text-decoration:none'><a href='https://form.jotform.us/72586059140155?addressOr[addr_line1]=" + addText +
-						"&addressOr[city]=" + muni +
-						"&addressOr[state]=New%20Jersey" +
-						"&addressOr[postal]=" + zip + 
-						"&lat=" + lat + "&lng=" + lng +						
-						"' target='blank'>ADD AN ASSET!</a></h1>";
-					layer.bindPopup(popupContent);
 
-				}
+loadAssets();
 				
-			});
-				overlayLayers["Parcels"] = parcelLayer;
-				parcelLayer.addTo(map);
-				$('#spinBox').hide();
-				console.log("Loaded parcels");
-				loadAssets();
-				
-			});
+
 
 function getAssetColor(d) {
   switch (d) {
@@ -211,21 +194,38 @@ $.getJSON(assetURL,
 
 }
 			
-  var div_sidebar = document.createElement('div');
-  div_sidebar.id = "sidebar";
-  div_sidebar.class = "sidebar";
-  $('body')[0].appendChild(div_sidebar);
-  
-  sidebar = L.control.sidebar('sidebar', {
-      position: 'right'
-  });
-	map.addControl(sidebar);
  
 			
-			
-function openForm() {
-	sidebar.toggle();
-}
+map.on('click', function (e) {
+	lat = e.latlng.lat;
+	lng = e.latlng.lng;
+	var popup = new L.popup({'max-width':'200px'}).setLatLng(e.latlng);
+    geocode = MQ.geocode().reverse(e.latlng).on('success', function(e) {
+			console.log(lat, lng);
+			locResult = geocode.describeLocation(e.result.best);
+			addPlace = locResult.indexOf('<');
+			console.log(addPlace);
+			addStripped=locResult.substr(0,addPlace);
+			restStripped=locResult.substr(addPlace+1,locResult.length);
+			cityPos=restStripped.indexOf(',');
+			cityStripped=restStripped.substr(4,cityPos-4);
+			stateStripped=restStripped.substr(cityPos+2,2);
+			console.log(addStripped);
+						console.log(restStripped);
+						console.log(cityStripped);
+						console.log(stateStripped);
+			var stateLabel ='';
+			if (stateStripped == 'NJ') {stateLabel = 'New Jersey';}
+			else if (stateStripped=='PA'){stateLabel = 'Pennsylvania';}
+			jotLink = "https://form.jotform.us/72586059140155?addressOr[addr_line1]="+ addStripped + "&addressOr[city]=" + cityStripped + "&addressOr[state]=" + stateLabel + "&lat=" + lat + "&lng=" + lng;
+;
+			popupContent = "<b>" + locResult + "</b>" + "<hr>" +
+				"<h1><a style='text-decoration:none' target='blank' href='"+ jotLink + "'>ADD AN ASSET!</a></h1>" ;
+	        popup.setContent(popupContent);
+		});
+	popup.openOn(map);
+});
+
 
 			
 
