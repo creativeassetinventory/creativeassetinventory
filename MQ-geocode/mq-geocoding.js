@@ -5,7 +5,7 @@ MQPLATFORMSERVER=MQPROTOCOL+"www.mapquestapi.com";
 MQSTATICSERVER="http://www.mapquestapi.com/staticmap/";
 MQTRAFFSERVER=TRAFFSERVER="http://www.mapquestapi.com/traffic/";
 MQROUTEURL="http://www.mapquestapi.com/directions/";
-MQGEOCODEURL="http://www.mapquestapi.com/geocoding/";
+MQGEOCODEURL="https://www.mapquestapi.com/geocoding/";
 MQNOMINATIMURL=MQPROTOCOL+"open.mapquestapi.com/";
 MQSEARCHURL="http://www.mapquestapi.com/search/";
 MQLONGURL=MQPLATFORMSERVER;
