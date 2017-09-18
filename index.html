@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='UTF-8'>
+<title>CREATIVE ASSET INVENTORY</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="jquery/jquery-1.6.4.min.js"></script>
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
+   integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
+   crossorigin=""/>
+ <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
+   integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
+   crossorigin=""></script>
+ <script src="randomColor.min.js"></script>
+ <script src="spin-js/spin.js"></script>
+ <script src="spin-js/jquery.spin.js"></script>
+ <script src="http://maps.stamen.com/js/tile.stamen.js"></script>
+ <link rel="stylesheet" href="leaflet-sidebar/L.Control.Sidebar.css" />
+    <script src="leaflet-sidebar/L.Control.Sidebar.js"></script>
+	<script src="button/leaflet-button.js"></script>
+
+
+
+
+<style>
+body {font-family:"Helvetica"; padding:5px;}
+h1 {font-family:"Bebas Neue"; font-size: 160%; color:#444;font-weight:bold; letter-spacing:.2em;}
+h2 {font-family:"Helvetica", Courier, sans-serif; font-weight:bold; font-size:120%; line-height:30%; color:#444;}
+h4 {font-size:90%;}
+
+button {background-color:#fff; font-family:"Helvetica"; font-size:120%; color:#444;}
+#titlebar {width:100%}
+
+#menubar {margin-top:10px;line-height:50%;font-family:"Bebas Neue"; font-size:120%; letter-spacing:.2em; float:right;font-weight:bold; color:#444;}
+#menubar a:link { color:#444; text-decoration:none }
+#menubar a:hover { color:#f69729 }
+
+#header {width:100%; background-color: #f69729;margin-top:40px;}
+
+.leaflet-popup-content {
+height:auto !important;
+}
+
+.menu-item {float:left; padding-left:4px;margin-top:0;}
+
+.btn-primary {
+	background: none repeat scroll 0 0 rgba(0, 0, 0, 0.25);
+	background-color:#ffffff;
+	font-family:"Bebas Neue";
+	font-weight:bold;
+	font-size:120%;
+	letter-spacing:.1em;
+	color:#777777;
+	border-radius: 4px;
+	margin: 0 0 0 10px;
+	padding: 3px 10px 3px 10px;
+	height: auto;
+}
+
+#spinBox {
+    z-index:999;
+    opacity:0.5;
+    display:none;
+    border-radius:0.25em;
+    width:5em;
+    height:5em;
+    margin: -2.5em 0 0 -2.5em;
+    background-color:#f0f3f6;
+    border:1px solid #fff;
+    position:fixed;
+    top:50%;
+    left:50%
+}
+
+#sidebar{
+	font-family:"Courier New";
+//  font-size:100%;
+	padding:10px;
+}
+
+		
+</style>
+
+</head>				
+	
+<body>
+<div id="menubar">
+<p class='menu-item'>HOME  +</p> <p class='menu-item'><a href="about.html">ABOUT  +</a></p> <p class='menu-item'>DEFINITIONS  +</p><p class='menu-item'>VOLUNTEER!</p>
+</div>
+<div style="float:left;padding-right:10px;"><img src="sf-logo.png" width="120px" style="float:left"><img src="ct-logo.png" height="120px" style="float:left;"></div>
+<div name="titlebar" >
+	<div id="header">
+		<h1 style="color:#fff; margin-top:3px;">CREATIVE ASSETS INVENTORY</h1>
+	</div>
+</div>
+<button class='btn-primary' style='float:right' onclick=window.open("https://form.jotform.us/72586059140155")>VIEW DIRECTORY</button>
+<button class='btn-primary' style='float:right' onclick=window.open("https://form.jotform.us/72586059140155")>ADD AN ASSET!</button> 
+
+<div id="spinBox" class='spinner'></div>
+<div id="mapdiv" style="width: 100%; height: 500px;"></div>
+
+<script type="text/javascript">
+
+var map = L.map('mapdiv',{
+  fullscreenControl: true,
+  fullscreenControlOptions: {
+    position: 'topleft'
+  }
+} ).setView([40.526388, -75.060482], 15);
+
+var sidebar;
+
+var stamen = L.tileLayer('http://a.tile.stamen.com/watercolor/{z}/{x}/{y}.png', {attribution: 'uses a <a href="http://stamen.com">stamen</a> basemap'}).addTo(map);
+
+googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+	maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3'],
+	attribution: 'uses google satellite'
+});
+
+var stamenLabels = L.tileLayer('http://a.tile.stamen.com/toner-labels/{z}/{x}/{y}.png', {attribution: 'uses <a href="http://stamen.com">stamen</a> labels'}).addTo(map);
+
+var muniURL = encodeURI("https://creativeassetinventory.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM munis where county = 'HUNTERDON'");
+var parcelURL = encodeURI("https://creativeassetinventory.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM parcels where city like '%STOCKTON%' or city like '%FRENCHTOWN%' or city like '%HOLLAND%' or city like '%KINGWOOD%' or city like '%LAMBERTVILLE%' or city like '%CLINTON%' ");
+var assetURL = encodeURI("https://creativeassetinventory.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM cai_public");
+console.log(parcelURL);
+
+var bases = { "Satellite": googleSat, "Watercolor": stamen};
+
+overlayLayers = {"Street labels": stamenLabels}; 
+		<!-- don't forget to add any new layers to the menu! -->		
+
+muniLayer = new L.geoJson();
+
+$.getJSON(muniURL,
+            function(data) {
+			
+	        muniLayer = L.geoJson(data, {
+				style: style,
+				interactive: false,
+				onEachFeature: function (feature, layer) {
+					
+//					labelText = feature.properties.name;
+//					var bounds = layer.getBounds();
+//					var center = bounds.getCenter();
+//					var divIcon = L.divIcon({ className: "textLabelClass", html: labelText});
+//					L.marker(new L.LatLng(center.lat, center.lng), {icon: divIcon }).addTo(map);
+				}
+				
+			});
+				overlayLayers["Towns"] = muniLayer;
+				muniLayer.addTo(map);
+				
+				
+			});
+
+		
+			function style(feature) {
+			var randColor = randomColor({hue: 'yellow'});						
+			return {
+					weight: 6,
+					opacity: .3,
+					color:'#f69729',
+					dashArray: '10,20',
+					fillOpacity: 0.1,
+					fillColor: randColor,
+				};
+			}
+
+
+var spinner = new Spinner().spin(spinBox);
+$('#spinBox').show();			
+$.getJSON(parcelURL,
+            function(data) {
+			
+	        parcelLayer = L.geoJson(data, {
+				style: {weight:1, opacity:.05, color:'#fff', fillOpacity:0, fillColor:'#fff'},
+				interactive: true,
+				onEachFeature: function (feature, layer) {
+					https://form.jotform.us/72586059140155?addressOr[addr_line1]=ADDRESS&addressOr[city]=CITY&addressOr[state]=New%20Jersey&addressOr[postal]=ZIP&lat=88&lng=99
+					addText = feature.properties.address;
+					muni = feature.properties.city;
+					zip = feature.properties.zip;
+					var bounds = layer.getBounds();
+					var lat = bounds.getCenter().lat;
+					var lng = bounds.getCenter().lng;
+					var popupContent = "<b>" + addText + "<br></b>" + muni + "<hr>" +
+						"<h1 style='letter-spacing:0.2em,text-decoration:none'><a href='https://form.jotform.us/72586059140155?addressOr[addr_line1]=" + addText +
+						"&addressOr[city]=" + muni +
+						"&addressOr[state]=New%20Jersey" +
+						"&addressOr[postal]=" + zip + 
+						"&lat=" + lat + "&lng=" + lng +						
+						"' target='blank'>ADD AN ASSET!</a></h1>";
+					layer.bindPopup(popupContent);
+
+				}
+				
+			});
+				overlayLayers["Parcels"] = parcelLayer;
+				parcelLayer.addTo(map);
+				$('#spinBox').hide();
+				console.log("Loaded parcels");
+				loadAssets();
+				
+			});
+
+function getAssetColor(d) {
+  switch (d) {
+    case 'Space or Facility (includes vacant spaces)':
+      return '#b30000';
+    case 'Business':
+      return '#ff9900';
+    case 'Person':
+      return '#b2df8a';
+    case 'Nonprofit, Educational Institution, or Association':
+      return '#ff0066';
+    case 'Event':
+      return '#fb9a99';
+    default:
+      return '#FFEDA0';
+  }
+  }
+			
+function loadAssets() {
+$.getJSON(assetURL,
+            function(data) {
+			
+	        assetLayer = L.geoJson(data, {
+
+			pointToLayer: function(feature, latlng) {
+				return new L.CircleMarker(latlng, {
+				radius: 10,
+				weight:2,
+				color:"#fff",
+				opacity:.7,
+				fillOpacity: 0.7,
+				fillColor:getAssetColor(feature.properties.a_type)
+				});
+				},
+			
+				interactive: true,
+				onEachFeature: function (feature, layer) {
+					lat = feature.properties.lat;
+					lng = feature.properties.lng;
+					var popupContent = "<h1>"+ feature.properties.a_name.toUpperCase() + "</h1>" +
+						"<h4>" + feature.properties.address.toUpperCase() + "</h4>"+
+						"<div height='200px' width='250px' style='overflow-x:hidden'>" +
+						"<img src='" + feature.properties.photolink + "' height='200px')>" + 
+						"</div>" +
+						feature.properties.a_desc + "<br>" + 
+						"<hr>" +
+						"<b>" + feature.properties.a_type + "</b>"
+					;
+					layer.bindPopup(popupContent, {'maxWidth':'260', 'keepInView': 'true', 'color':getAssetColor(feature.properties.a_type)});
+
+				}
+				
+			});
+				overlayLayers["Assets"] = assetLayer;
+				assetLayer.addTo(map);
+				L.control.layers(bases, overlayLayers).addTo(map);
+				console.log("loaded assets");
+				
+			});
+
+}
+			
+  var div_sidebar = document.createElement('div');
+  div_sidebar.id = "sidebar";
+  div_sidebar.class = "sidebar";
+  $('body')[0].appendChild(div_sidebar);
+  
+  sidebar = L.control.sidebar('sidebar', {
+      position: 'right'
+  });
+	map.addControl(sidebar);
+ 
+			
+			
+function openForm() {
+	sidebar.toggle();
+}
+
+			
+
+	
+</script> 
+  
+
+</body>
+</html>
