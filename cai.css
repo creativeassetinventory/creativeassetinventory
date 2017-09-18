@@ -1,0 +1,54 @@
+body {font-family:"Helvetica"; padding:5px;}
+h1 {font-family:"Bebas Neue"; font-size: 160%; color:#444;font-weight:bold; letter-spacing:.2em;}
+h2 {font-family:"Helvetica", Courier, sans-serif; font-weight:bold; font-size:120%; line-height:30%; color:#444;}
+h4 {font-size:90%;}
+
+button {background-color:#fff; font-family:"Helvetica"; font-size:120%; color:#444;}
+#titlebar {width:100%}
+
+#menubar {margin-top:10px;line-height:50%;font-family:"Bebas Neue"; font-size:120%; letter-spacing:.2em; float:right;font-weight:bold; color:#444;}
+#menubar a:link { color:#444; text-decoration:none }
+#menubar a:hover { color:#f69729 }
+
+#header {width:100%; background-color: #f69729;margin-top:40px;}
+
+.leaflet-popup-content {
+height:auto !important;
+}
+
+.menu-item {float:left; padding-left:4px;margin-top:0;}
+
+.btn-primary {
+	background: none repeat scroll 0 0 rgba(0, 0, 0, 0.25);
+	background-color:#ffffff;
+	font-family:"Bebas Neue";
+	font-weight:bold;
+	font-size:120%;
+	letter-spacing:.1em;
+	color:#777777;
+	border-radius: 4px;
+	margin: 0 0 0 10px;
+	padding: 3px 10px 3px 10px;
+	height: auto;
+}
+
+#spinBox {
+    z-index:999;
+    opacity:0.5;
+    display:none;
+    border-radius:0.25em;
+    width:5em;
+    height:5em;
+    margin: -2.5em 0 0 -2.5em;
+    background-color:#f0f3f6;
+    border:1px solid #fff;
+    position:fixed;
+    top:50%;
+    left:50%
+}
+
+#sidebar{
+	font-family:"Courier New";
+//  font-size:100%;
+	padding:10px;
+}
