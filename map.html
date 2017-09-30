@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='UTF-8'>
+<title>CREATIVE ASSET INVENTORY</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="jquery/jquery-1.6.4.min.js"></script>
+
+
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
+   integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
+   crossorigin=""/>
+ <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
+   integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
+   crossorigin=""></script>
+ <script src="randomColor.min.js"></script>
+ <script src="spin-js/spin.js"></script>
+ <script src="spin-js/jquery.spin.js"></script>
+ <script src="http://maps.stamen.com/js/tile.stamen.js"></script>
+<script src="MQ-geocode/mq-map.js"></script>
+ <script src="MQ-geocode/mq-geocoding.js"></script>
+ <script src="leaflet-pip/leaflet-pip.js"></script>
+ 
+   <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet@2.0.8"></script>
+ 
+ <!-- Esri Leaflet Geocoder -->
+    <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@2.2.6/dist/esri-leaflet-geocoder.css">
+    <script src="https://unpkg.com/esri-leaflet-geocoder@2.2.6"></script>
+
+
+<link rel="stylesheet" href="css/cai.css" />
+
+
+
+<style>
+		
+</style>
+
+</head>				
+	
+<body>
+
+<div id="iconBar"><img src="sf-logo.png" width="90px" style="float:left"><img src="ct-logo.png" height="90px" style="float:left; padding-right:20px;"></div>
+<div name="titlebar" >
+	<div id="header">
+		<h1 style="color:#fff;">CREATIVE ASSETS INVENTORY</h1>
+	</div>
+</div>
+<div class="topnav" id="topMenu">
+  <a href="survey.html">Add an Asset!</a>
+  <a href="connect.html">Get Involved</a>
+  <a href="directory.html">Directory</a>
+  <a href="map.html">Map</a>
+    <a href="index.html">About</a>
+  <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="loadMenu()">&#9776;</a>
+</div>
+
+<div id="spinBox" class='spinner'></div>
+<div id="directoryBox" style="width:100%; height:250px; display:none;"></div>
+<div id="mapdiv" style="width: 100%; height: 500px;"></div>
+
+<script type="text/javascript">
+
+function loadMenu() {
+    var x = document.getElementById("topMenu");
+    if (x.className === "topnav") {
+        x.className += " responsive";
+    } else {
+        x.className = "topnav";
+    }
+}
+
+var map = L.map('mapdiv',{
+  fullscreenControl: true,
+  fullscreenControlOptions: {
+    position: 'topleft'
+  }
+} ).setView([40.526388, -75.060482], 15);
+
+var searchControl = L.esri.Geocoding.geosearch().addTo(map);
+
+    // create an empty layer group to store the results and add it to the map
+    var results = L.layerGroup().addTo(map);
+
+    // listen for the results event and add every result to the map
+    searchControl.on("results", function(data) {
+        results.clearLayers();
+        for (var i = data.results.length - 1; i >= 0; i--) {
+            results.addLayer(L.marker(data.results[i].latlng));
+        }
+    });
+
+var sidebar;
+
+
+var stamen = L.tileLayer('http://a.tile.stamen.com/watercolor/{z}/{x}/{y}.png', {attribution: 'uses a <a href="http://stamen.com">stamen</a> basemap'});
+var streets = L.tileLayer('http://a.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {attribution: 'uses a <a href="http://stamen.com">stamen</a> basemap'});
+
+
+googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+	maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3'],
+	attribution: 'uses google satellite'
+});
+
+googleStr = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+	maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3'],
+	attribution: 'uses google streets'
+});
+
+var stamenLabels = L.tileLayer('http://a.tile.stamen.com/toner-labels/{z}/{x}/{y}.png', {attribution: 'uses <a href="http://stamen.com">stamen</a> labels'});
+
+var waterStreet = new L.layerGroup();
+waterStreet.addLayer(stamen)
+waterStreet.addLayer(stamenLabels);
+waterStreet.addTo(map);
+
+var satLabel = new L.layerGroup();
+makeSatLabels(satLabel);
+
+function makeSatLabels(e) {
+	e._layers[36] = googleSat;
+	satLabel.addLayer(stamenLabels);
+}
+
+
+var muniURL = encodeURI("https://creativeassetinventory.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM munis where county = 'HUNTERDON'");
+<!-- var parcelURL = encodeURI("https://creativeassetinventory.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM parcels where city like '%STOCKTON%' or city like '%FRENCHTOWN%' or city like '%HOLLAND%' or city like '%KINGWOOD%' or city like '%LAMBERTVILLE%' or city like '%CLINTON%' "); 
+-->
+var assetURL = encodeURI("https://creativeassetinventory.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM cai_public");
+<!-- console.log(parcelURL); -->
+
+var bases = { "Watercolor": waterStreet, "Streets": googleStr, "Satellite": satLabel};
+
+overlayLayers = {}; 
+		<!-- don't forget to add any new layers to the menu! -->		
+
+muniLayer = new L.geoJson();
+
+$.getJSON(muniURL,
+            function(data) {
+			
+	        muniLayer = L.geoJson(data, {
+				style: style,
+				interactive: false,
+				onEachFeature: function (feature, layer) {
+					
+//					labelText = feature.properties.name;
+//					var bounds = layer.getBounds();
+//					var center = bounds.getCenter();
+//					var divIcon = L.divIcon({ className: "textLabelClass", html: labelText});
+//					L.marker(new L.LatLng(center.lat, center.lng), {icon: divIcon }).addTo(map);
+				}
+				
+			});
+				overlayLayers["Towns"] = muniLayer;
+				muniLayer.addTo(map);
+				
+				
+			});
+
+		
+			function style(feature) {
+			var randColor = randomColor({hue: 'yellow'});						
+			return {
+					weight: 6,
+					opacity: .3,
+					color:'#f69729',
+					dashArray: '10,20',
+					fillOpacity: 0.1,
+					fillColor: randColor,
+				};
+			}
+
+
+
+loadAssets();
+				
+
+
+function getAssetColor(d) {
+  switch (d) {
+    case 'Space or Facility (includes vacant spaces)':
+      return '#b30000';
+    case 'Business':
+      return '#ff9900';
+    case 'Person':
+      return '#b2df8a';
+    case 'Nonprofit, Educational Institution, or Association':
+      return '#ff0066';
+    case 'Event':
+      return '#fb9a99';
+    default:
+      return '#FFEDA0';
+  }
+  }
+			
+function loadAssets() {
+$.getJSON(assetURL,
+            function(data) {
+			
+	        assetLayer = L.geoJson(data, {
+
+			pointToLayer: function(feature, latlng) {
+				return new L.CircleMarker(latlng, {
+				radius: 10,
+				weight:2,
+				color:"#fff",
+				opacity:.7,
+				fillOpacity: 0.7,
+				fillColor:getAssetColor(feature.properties.a_type)
+				});
+				},
+			
+				interactive: true,
+				onEachFeature: function (feature, layer) {
+					lat = feature.properties.lat;
+					lng = feature.properties.lng;
+					var popupContent = "<h1>"+ feature.properties.a_name.toUpperCase() + "</h1>" +
+						"<h4>" + feature.properties.address.toUpperCase() + "</h4>"+
+						"<div height='200px' width='250px' style='overflow-x:hidden'>" +
+						"<img src='" + feature.properties.photolink + "' height='200px')>" + 
+						"</div>" +
+						feature.properties.a_desc + "<br>" + 
+						"<hr>" +
+						"<b>" + feature.properties.a_type + "</b>"
+					;
+					layer.bindPopup(popupContent, {'maxWidth':'260', 'keepInView': 'true', 'color':getAssetColor(feature.properties.a_type)});
+
+				}
+				
+			});
+				overlayLayers["Assets"] = assetLayer;
+				assetLayer.addTo(map);
+				L.control.layers(bases, overlayLayers, {position:'topleft'}).addTo(map);
+				console.log("loaded assets");
+				
+			});
+
+}
+		
+			
+			
+map.on('click', function (e) {
+	lat = e.latlng.lat;
+	lng = e.latlng.lng;
+	
+	var popup = new L.popup({maxWidth:'140'}).setLatLng(e.latlng);
+	addStripped='';
+
+	var esriGeo = L.esri.Geocoding.reverseGeocode().latlng([lat, lng]).run(function(error, result, response){
+	var codeAddress = '';
+	console.log(result.address.Addr_type);
+		if (result.address.Addr_type == 'POI') {
+			codeAddress = result.address.LongLabel;
+		}
+		
+		else {
+			codeAddress = result.address.Match_addr;
+		}
+		jotLink='https://form.jotform.us/72586059140155?fullAddress='+codeAddress;
+
+ 		function setPopup() {
+			
+				popupContent = "<b>" + codeAddress + "</b><hr>" +
+					"<h1><a style='text-decoration:none' target='blank' href='"+ jotLink + "'>ADD AN ASSET!</a></h1>" ;
+				}			
+				setPopup();
+			popup.setContent(popupContent);
+			popup.openOn(map);
+			});
+			
+		});
+
+
+			
+
+	
+</script> 
+  
+
+</body>
+</html>
