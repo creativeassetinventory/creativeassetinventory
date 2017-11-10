@@ -9,10 +9,12 @@
 }
 
 
-body {font-family:"Helvetica"; padding:5px;}
+body {font-family:"Helvetica"; padding-left:20px;padding-right:20px;padding-top:5px;padding-bottom:5px;color:#444;}
 h1 {font-family:'bebas_neuebold'; font-size: 160%; color:#444; letter-spacing:.2em;}
 h2 {font-family:"bebas_neuebold", Courier, sans-serif; font-weight:normal; font-size:130%; color:#444; letter-spacing:.1em;}
-h4 {font-size:90%;}
+h3 {font-family:"bebas_neuebold", sans-serif; font-size:135%; letter-spacing:.1em;color:#444;}
+h4 {font-family:"bebas_neuebold", sans-serif; font-size:120%; letter-spacing:.1em;color:#444;margin-bottom:6px;}
+h5 {font-family:"bebas_neuebook", sans-serif; font-size:120%; letter-spacing:.1em;color:#444;}
 
 button {background-color:#fff; font-family:"Helvetica"; font-size:120%; color:#444;}
 #titlebar {width:100%; padding-top:0;padding-left:20px;padding-bottom:0;margin-bottom:0;}
@@ -153,7 +155,7 @@ height:auto !important;
 	}
 
 .pagewrap {
-padding:10px; 
+padding:10px; margin-top:10px;
 }	
 .frontmenuwrapper {
 	margin-top:10px;
@@ -164,4 +166,80 @@ max-width:300px;
 float:left;
 padding-left:10px;
 padding-right:10px;
+}
+
+
+.legend {
+    line-height: 18px;
+    color: #555;
+}
+.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}
+
+.directorypic {
+	float:left;
+	height:200px;
+	max-width:100%;
+}
+
+.artPod {height:auto; padding-left:100px; margin-right:100px;overflow-x:hidden;}
+.imgcontainer{width:275px;float:right;padding-top:50px;}
+.siteimgcontainer{width:300px;float:right;margin-top:-10px}
+.regularTitle{padding:10px;padding-top:0;margin-top:-10;}
+.assetDesc{padding:10px;width:90%}
+.siteHighlight{padding:10px;padding-left:0}
+.assetPic {width:200px; padding:5px;padding-bottom:10px;}
+.spacer {width:100%; border-style:none none solid none; border-width: 5px; border-color: #ddd;}
+.innerspacer {width:100%; border-style:none;}
+.locationheader{margin-top:-20px}
+
+.sitePod {height:auto; width:90%; padding:10px;}
+.sitePic {width:300px; padding:20px;}
+.siteDesc {padding:10px;width:90%;margin-top:-20px;}
+
+.assetPodSmall{width:200px;height:240px;overflow-y:hidden;padding:10px;overflow-x:hidden;float:left;border: solid 2px #eee}
+.assetPodSmall h3 {color:#444}
+
+.imgcontainersmall{height:180px;width:180px;overflow:hidden;}
+.assetPicSmall{width:180px;}
+
+.assetCategoryTitle { padding-left:60px;}
+
+.maplink {padding-right:20px;padding-left:0;color:#ff0066;padding-top:0;padding-bottom:0;}
+
+
+
+@media screen and (max-width: 600px) {
+	body {font-size:90%;padding:5px;}
+  	.imgcontainer{width:100%;float:none;padding:0;padding-top:10px;overflow-x:hidden;min-height:auto;}
+	.artPod {height:auto; width: 90%; padding:5px; overflow-x:hidden;margin-left:-15px;}
+	.siteimgcontainer {width:100%;float:none;padding-left:10;}
+	  .assetPic {width:100%;overflow-x:hidden;}
+	  .sitePic {width:90%;height:auto;padding:10;padding-left:5;}
+	  .assetPodSmall{width:90%;height:auto;}
+	  .imgcontainersmall{height:auto;width:90%;overflow:hidden;}
+		.assetPicSmall{width:100%;height:auto;}
+		.maplink{float:left;padding-right:5px;}
+	.assetCategoryTitle { padding-left:3px;}
+  
+  
+  }
+
+@media screen and (min-width: 500px) {
+	.mobileTitle {display:none}
+	.regularTitle{display:block}
+
+}  
+
+@media screen and (max-width: 500px) {
+	.mobileTitle {display:block}
+	.regularTitle{display:none}
+
+} 
+  
 }
