@@ -117,8 +117,8 @@ height:auto !important;
 }
 
 .leaflet-control-layers{  
-  width:59px;
-  height:25px;    
+  width:30px;
+  height:30px;    
 } 
 
 
@@ -141,7 +141,6 @@ height:auto !important;
 }
 
 .leaflet-control-layers-toggle:before {
-	content:"LAYERS";
 	padding-left:2px;
     color:#444 ;
 }
@@ -186,6 +185,26 @@ padding-right:10px;
 	height:200px;
 	max-width:100%;
 }
+
+#spinBox {
+    z-index:999;
+    opacity:0.5;
+    display:none;
+    border-radius:0.25em;
+    width:5em;
+    height:5em;
+    margin: -2.5em 0 0 -2.5em;
+	color:#ff0099;
+	shadow:true;
+    background-color:#f0f3f6;
+    border:1px solid #fff;
+    position:fixed;
+    top:20%;
+    left:50%
+}
+
+.editlink {float:left;font-family:"bebas_neuebold", sans-serif; font-size:100%; letter-spacing:.1em;color:#444;}
+.editlink a{text-decoration:none;color:#ff0066}
 
 .artPod {height:auto; padding-left:100px; margin-right:100px;overflow-x:hidden;}
 .imgcontainer{width:275px;float:right;padding-top:50px;}
