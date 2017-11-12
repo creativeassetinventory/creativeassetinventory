@@ -57,7 +57,7 @@
   <a href="directory.html">Directory</a>
   <a href="map.html">Map</a>
     <a href="index.html">About</a>
-  <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="loadMenu()">&#9776;</a>
+  <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="loadMenu()"><i class='fa fa-bars fa-lg'></i></a>
 </div>
 
 <h1>Assets Entered So Far</h1>
@@ -153,7 +153,6 @@ function categorizeAsset(d) {
 var converter = ["people","businesses","places","institutions","associations","events","supporting", "other"];
 
 function displayCategory(q) {
-	console.log(q);
 	if (q.style.display == 'block') {
 			q.style.display = 'none';
 	}
@@ -265,7 +264,9 @@ function displayAssets(k,c) {
 				}
 				
 				else {facilityCompile = '';}
+				
 -->				
+				var editCompile = '';
 				
 				var regularTitleSetup =  
 				"<div class='regularTitle'>" +
@@ -287,6 +288,7 @@ function displayAssets(k,c) {
 				regularTitleSetup +
 				"<div class='assetDesc'>" +
 				assetList[n].a_desc + "<br><br>" +
+//				editCompile +
 //				facilityCompile +
 				"</div>" ;
 				

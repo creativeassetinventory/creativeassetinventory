@@ -23,6 +23,12 @@
  <script src="leaflet-pip/leaflet-pip.js"></script>
   <!-- Tabletop to access Google spreadsheets - THANK YOU AMAZING HUMANS WHO CREATED THIS!! LOVE LOVE LOVE-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.1/tabletop.js"></script>
+  <script src="leaflet-markercluster/dist/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="leaflet-markercluster/dist/MarkerCluster.css">
+	    <link rel="stylesheet" href="leaflet-markercluster/dist/MarkerCluster.Default.css">
+<link rel="stylesheet" href="leaflet-sidebar/L.Control.Sidebar.css" />
+    <script src="leaflet-sidebar/L.Control.Sidebar.js"></script>
+	<script src="button/leaflet-button.js"></script>
   
  <!-- FontAaaawwwwesome -->  
   <script src="https://use.fontawesome.com/0a9a58d8dc.js"></script>  
@@ -65,7 +71,7 @@
 
 <div id="spinBox" class='spinner'></div>
 <div id="directoryBox" style="width:100%; height:250px; display:none;"></div>
-<div id="mapdiv" style="width: 100%; height: 400px;"></div>
+<div id="mapdiv" style="width: 100%; height: 500px;"></div>
 <div id="mapkey" style="width:100%"></div>
 
 <script type="text/javascript">
@@ -104,7 +110,15 @@ var searchControl = L.esri.Geocoding.geosearch().addTo(map);
         }
     });
 
-var sidebar;
+  var info_sidebar = document.createElement('div');
+  info_sidebar.id = "infoSidebar";
+  info_sidebar.class = "sidebar";
+  $('body')[0].appendChild(info_sidebar);
+  
+  infoSidebar = new L.control.sidebar('infoSidebar',{
+      position: 'right'
+  });
+	map.addControl(infoSidebar);
 
 
 var stamen = L.tileLayer('http://a.tile.stamen.com/watercolor/{z}/{x}/{y}.png', {attribution: 'uses a <a href="http://stamen.com">stamen</a> basemap'});
@@ -184,6 +198,7 @@ $.getJSON(muniURL,
 
 
 loadAssets();
+var infoSidebarOn = false;
 				
 
 
@@ -212,55 +227,174 @@ function getAssetColor(d) {
   }
   }
 
+function cleanLink(lk) {
+	var httpsFind = lk.search('https://');
+	cleaned = '';
+	if (httpsFind == -1) {
+		var httpFind = lk.search('http://');
+		if (httpFind == -1) {
+			var instaHandle = lk.search('@');
+			if (instaHandle != -1) {
+				cleaned = 'http://www.instagram.com/' + lk.substr(0, lk.length-1);
+			}
+			else {
+				cleaned = 'http://' + lk.trim();
+			}
+		}
+		else cleaned = lk;
+	}
+	else cleaned = lk;
+	return cleaned;
+}
+
+function displayThisAsset(a) {
+			var info = a.target.options.data;
+			atype = info.a_type;	
+
+			var linkCleaned = '';
+
+				if (info.website != '') {
+					linkCleaned = cleanLink(info.website);
+				}
+				var websiteCompile = '';
+				
+				if ((linkCleaned != '')) {
+					websiteCompile = 	"<a style='line-height:1.5em;margin-bottom:3px;' href='"+ linkCleaned +"'>" + info.website + "</a><br>";
+				}
+				else {websiteCompile = '';}
+				
+				var locationCompile;
+				
+				if (info.pub_add != '') {
+					locationCompile = 
+						"<b>" +
+						info.pub_add + 
+						"</b>" + 
+						"</br>";						;
+					}
+				else {
+					locationCompile = 
+						"<b>" +
+						info.town +
+						"</b>" + 
+						"</br>";
+					}
+
+			var titleSetup = 
+			"<b>" + "<i style='padding-right:5px; color:" + getAssetColor(atype) + ";' class='fa fa-circle'></i>" + info.a_type + "</b>" +
+			"<hr>" +
+			"<h3 style='margin-bottom:-10px;margin-top:0px;'>"+ info.a_name + "</h3>" +
+						 "<br>" +
+						"<div style='margin-top:-10px;'>" +
+						locationCompile +
+				websiteCompile +
+						"</div>" +
+						 "<hr>";					
+				
+				var picSetup = '';
+				
+				if ((info.photolink != null) && (info.photolink != '') && (info.photolink != undefined)) {
+					picSetup = 
+						"<div class='imgcontainer' style='width:90%;float:none;padding-top:0;'>" + 
+						"<img class = 'assetPic' style='float:none;width:100%;padding:5px;' src='" + info.photolink + "'>" +
+						"</div>";
+				}
+				
+			
+
+				var all = 	
+				titleSetup +
+				picSetup +				
+				"<div class='assetDesc'>" +
+				info.a_desc + "<br><br>" +
+				"</div>" ;
+				
+			
+			
+			
+			var infoDisplay = 
+			 "<i class='fa fa-times fa-lg' style='float:right' onClick='infoSidebar.toggle();infoSidebarOn=false;' ></i>" +
+			 all ;
+			
+			
+				
+				infoSidebar.setContent(infoDisplay);
+				if (infoSidebarOn == false) {
+					infoSidebar.show();
+					infoSidebarOn = true;
+				}
+	
+
+}
+  
 var points = [];
+var infoDisplay ='bibble';
 function displayAssets(data) {
-	var assets = new L.featureGroup;
+	var assets = new L.markerClusterGroup({disableClusteringAtZoom:'14'});
 	for (i=0;i<=data.length-1;i++) {
 		if ((data[i].subdate != '') && (data[i].Lat !='#N/A') && (data[i].Lat !='#REF!')) {
 			var lat = data[i].Lat;
 			var lng = data[i].Lng;
 			var latlng = [lat,lng];
 			var atype = data[i].a_type;
-			var marker = new L.CircleMarker(latlng, {
+			assetMarker = L.CircleMarker.extend({
+				options:{
+					data: []
+				}
+			});
+			var marker = new assetMarker(latlng, {
 				radius: 10,
 				weight:2,
 				color:"#fff",
 				opacity:.7,
 				fillOpacity: 0.7,
-				fillColor:getAssetColor(atype)
+				fillColor:getAssetColor(atype),
+				data: data[i]
 				});
 			assets.addLayer(marker);
+			
 			var content = 
-					"<b>"+ data[i].a_name + "</b>" +
-						 "<br>" + data[i].pub_add + 
-						 "<hr>" +
-						 "<b>" + "<i style='padding-right:5px; color:" + getAssetColor(atype) + ";' class='fa fa-circle'></i>" + data[i].a_type + "</b>";
+					"<b>"+ data[i].a_name + "</b>";
 			
 			marker.bindTooltip(content,{'maxWidth':'300px'});
+			marker.on("click", function(e) {
+				displayThisAsset(e);			
+			})
 			assets.addTo(map);		
 		}
-	var key = "<div style='padding-top:10px;font-size:80%'><span style='padding-left:10px; color:#F44336'>" + 
-				"<i class='fa fa-circle'></i></span>" + 
-				"<span style='padding:10px'> People</span>" +
-				"<span style='padding-left:10px; color:#4CAF50'>" + 
-				"<i class='fa fa-circle'></i></span>" + 
-				"<span style='padding:10px'> Places</span>" +
-				"<span style='padding-left:10px; color:#03A9F4'>" + 
-				"<i class='fa fa-circle'></i></span>" + 
-				"<span style='padding:10px'> Businesses</span>" +
-				"<span style='padding-left:10px; color:#FF5722'>" + 
-				"<i class='fa fa-circle'></i></span>" + 
-				"<span style='padding:10px'> Institutions</span>" +
-				"<span style='padding:10px; color:#795548'>" + 
-				"<i class='fa fa-circle'></i></span>" + 
-				"<span style='padding:10px'> Associations</span>" +
-				"<span style='padding-left:10px; color:#673AB7'>" + 
-				"<i class='fa fa-circle'></i></span>" + 
-				"<span style='padding:10px'> Events</span>" +
-				"<span style='padding-left:10px; color:#FFC107'>" + 
-				"<i class='fa fa-circle'></i></span>" + 
-				"<span style='padding:10px'> Supporting</span>" + 
-				"</div><hr>";
+	var key = "<div class='key'>"+
+				"<div class= 'keyitem'>" + 
+				"<i class='fa fa-circle-o' style='color:#900C3F'></i>" + 
+				" Cluster (click/zoom!)" +
+				"<div class= 'keyitem'>" + 
+				"<i class='fa fa-circle' style='color:#F44336'></i>" + 
+				" People" +
+				"</div>" + 
+				"<div class= 'keyitem'>" + 
+				"<i class='fa fa-circle' style='color:#4CAF50'></i>" + 
+				" Places" +
+				"</div>" + 
+				"<div class= 'keyitem'>" + 
+				"<i class='fa fa-circle' style='color:#03A9F4'></i>" + 
+				" Businesses" +
+				"</div>" + 
+				"<div class= 'keyitem'>" + 
+				"<i class='fa fa-circle' style='color:#FF5722'></i>" + 
+				" Institutions" +
+				"</div>" + 
+				"<div class= 'keyitem'>" + 
+				"<i class='fa fa-circle' style='color:#795548'></i>" + 
+				" Associations" +
+				"</div>" + 
+				"<div class= 'keyitem'>" + 
+				"<i class='fa fa-circle' style='color:#673AB7'></i>" + 
+				" Events" +
+				"</div>" + 				
+				"<div class= 'keyitem'>" + 
+				"<i class='fa fa-circle' style='color:#FFC107'></i>" + 
+				" Supporting" +
+				"</div>" + 
+				"</div>";
 				
 				
 	overlayLayers["Assets"] = assets;
