@@ -17,7 +17,6 @@
  <script src="randomColor.min.js"></script>
  <script src="spin-js/spin.js"></script>
  <script src="spin-js/jquery.spin.js"></script>
- <script src="http://maps.stamen.com/js/tile.stamen.js"></script>
  
    <!-- Tabletop to access Google spreadsheets - THANK YOU AMAZING HUMANS WHO CREATED THIS!! LOVE LOVE LOVE-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.1/tabletop.js"></script>
@@ -64,7 +63,7 @@
 <h1>Assets Entered So Far</h1>
 
 <div id="assetTableHolder" style="width:100%;"></div>
-
+<div id="spinBox" class='spinner'></div>
 <script type="text/javascript">
 
 function loadMenu() {
@@ -117,6 +116,7 @@ function getAssetColor(d) {
   }
   }
 
+var spinner = new Spinner().spin(spinBox);
 var assetList = [];
 var assetsByCategory = {"people":[], "businesses":[], "places":[], "institutions":[], "associations":[], "events":[], "supporting":[], "other":[]};
 
@@ -164,6 +164,7 @@ function displayCategory(q) {
 
 function setupAssets(data) {
 	assetList=[];
+	$('#spinBox').show();
 	for (i=0;i<=data.length-1;i++) {
 		if ((data[i].subdate != '')) {
 			categorizeAsset(data[i]);
@@ -178,8 +179,8 @@ function setupAssets(data) {
 		document.getElementById("assetTableHolder").innerHTML+=
 			"<div class='assetCategoryTitle'>" +
 			"<table class='spacer' ></table>"+
-			"<h2 onClick = 'displayCategory(" + categoryname + ")' style='color:" + getAssetColor(a_type) + "'>" + 
-			"<i class='fa fa-circle fa-lg' style='padding-right:10px;'></i>" + a_type + 
+			"<h2 onClick = 'displayCategory(" + categoryname + ")'>" + 
+			"<i class='fa fa-circle fa-lg' style='padding-right:10px; color:" + getAssetColor(a_type) + "'></i>" + a_type + 
 			"</h2>" + 
 			"<ul class = 'assetCategory' id='" + categoryname + "' style='margin-top:-10px;display:none'>" + 
 			"</ul>" +
@@ -227,13 +228,15 @@ function displayAssets(k,c) {
 						"<b>" +
 						"<span class='maplink' onClick='' style='line-height:2em'><i class = 'fa fa-map-marker fa-lg'></i></span>" +
 						assetList[n].pub_add + 
-						"</b>";						;
+						"</b>" + 
+						"</br>";						;
 					}
 				else {
 					locationCompile = 
 						"<b>" +
 						assetList[n].town +
-						"</b>";
+						"</b>" + 
+						"</br>";
 					}	
 				
 				var picSetup = '';
@@ -251,7 +254,7 @@ function displayAssets(k,c) {
 					websiteCompile = 	"<a style='line-height:1.5em;margin-bottom:3px;' href='"+ linkCleaned +"'>" + assetList[n].website + "</a><br>";
 				}
 				else {websiteCompile = '';}
-				
+<!-- 				
 				var facilityCompile = '';
 				if ((assetList[n].artistspace != null) && (assetList[n].artistspace != undefined) || (assetList[n].artistspace != ''))  {
 					facilityCompile = "<b>Space description:</b> " + assetList[n].artistspace + "<br>";
@@ -262,20 +265,20 @@ function displayAssets(k,c) {
 				}
 				
 				else {facilityCompile = '';}
-				
+-->				
 				
 				var regularTitleSetup =  
 				"<div class='regularTitle'>" +
 				"<h4>" + assetList[n].a_name + "</h4>" +
-				websiteCompile +
 				locationCompile +
+				websiteCompile +
 				"</div>";
 				
 				var mobileTitleSetup =  
 				"<div class='mobileTitle'>" +
 				"<h4>" + assetList[n].a_name + "</h4>" +
-				websiteCompile +
 				locationCompile +
+				websiteCompile +
 				"</div>";
 
 				var info = 	
@@ -284,7 +287,7 @@ function displayAssets(k,c) {
 				regularTitleSetup +
 				"<div class='assetDesc'>" +
 				assetList[n].a_desc + "<br><br>" +
-				facilityCompile +
+//				facilityCompile +
 				"</div>" ;
 				
 				assetContainerID = n.toString();
@@ -298,7 +301,7 @@ function displayAssets(k,c) {
 				"</div>" ;
 			}
 	
-	
+		$('#spinBox').hide();
 	
 }
 
