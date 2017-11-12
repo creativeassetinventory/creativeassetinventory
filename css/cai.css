@@ -167,6 +167,16 @@ padding-left:10px;
 padding-right:10px;
 }
 
+.key {
+	padding-top:10px;font-size:80%;
+}
+
+.keyitem {
+	float:left;
+	width:auto;
+	padding-left:10px;
+	padding-right:10px;
+}
 
 .legend {
     line-height: 18px;
@@ -201,6 +211,10 @@ padding-right:10px;
     position:fixed;
     top:20%;
     left:50%
+}
+
+#infoSidebar {
+	padding:8px;
 }
 
 .editlink {float:left;font-family:"bebas_neuebold", sans-serif; font-size:100%; letter-spacing:.1em;color:#444;}
