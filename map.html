@@ -66,6 +66,7 @@
 <div id="spinBox" class='spinner'></div>
 <div id="directoryBox" style="width:100%; height:250px; display:none;"></div>
 <div id="mapdiv" style="width: 100%; height: 400px;"></div>
+<div id="mapkey" style="width:100%"></div>
 
 <script type="text/javascript">
 
@@ -229,41 +230,43 @@ function displayAssets(data) {
 				fillColor:getAssetColor(atype)
 				});
 			assets.addLayer(marker);
-			var popupContent = 
+			var content = 
 					"<b>"+ data[i].a_name + "</b>" +
 						 "<br>" + data[i].pub_add + 
 						 "<hr>" +
 						 "<b>" + "<i style='padding-right:5px; color:" + getAssetColor(atype) + ";' class='fa fa-circle'></i>" + data[i].a_type + "</b>";
 			
-			marker.bindPopup(popupContent,{'maxWidth':'200px'});
+			marker.bindTooltip(content,{'maxWidth':'300px'});
 			assets.addTo(map);		
 		}
-	var key = "<span style='padding-left:10px; color:#F44336'>" + 
+	var key = "<div style='padding-top:10px;font-size:80%'><span style='padding-left:10px; color:#F44336'>" + 
 				"<i class='fa fa-circle'></i></span>" + 
-				"<b style='padding:10px'> People</b>" +
+				"<span style='padding:10px'> People</span>" +
 				"<span style='padding-left:10px; color:#4CAF50'>" + 
 				"<i class='fa fa-circle'></i></span>" + 
-				"<b style='padding:10px'> Places</b>" +
+				"<span style='padding:10px'> Places</span>" +
 				"<span style='padding-left:10px; color:#03A9F4'>" + 
 				"<i class='fa fa-circle'></i></span>" + 
-				"<b style='padding:10px'> Businesses</b>" +
+				"<span style='padding:10px'> Businesses</span>" +
 				"<span style='padding-left:10px; color:#FF5722'>" + 
 				"<i class='fa fa-circle'></i></span>" + 
-				"<b style='padding:10px'> Institutions</b>" +
+				"<span style='padding:10px'> Institutions</span>" +
 				"<span style='padding:10px; color:#795548'>" + 
 				"<i class='fa fa-circle'></i></span>" + 
-				"<b style='padding:10px'> Associations</b>" +
+				"<span style='padding:10px'> Associations</span>" +
 				"<span style='padding-left:10px; color:#673AB7'>" + 
 				"<i class='fa fa-circle'></i></span>" + 
-				"<b style='padding:10px'> Events</b>" +
+				"<span style='padding:10px'> Events</span>" +
 				"<span style='padding-left:10px; color:#FFC107'>" + 
 				"<i class='fa fa-circle'></i></span>" + 
-				"<b style='padding:10px'> Supporting</b>";
+				"<span style='padding:10px'> Supporting</span>" + 
+				"</div><hr>";
 				
 				
-	assetOverlay[key] = assets;
+	overlayLayers["Assets"] = assets;
 	}
 L.control.layers(bases, overlayLayers, {position:'topleft'}).addTo(map);
+document.getElementById('mapkey').innerHTML = key;
 //L.control.layers('',assetOverlay, {position:'bottomleft',collapsed:false}).addTo(map);
 	
 map.fitBounds(assets.getBounds());
