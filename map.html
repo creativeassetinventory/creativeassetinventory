@@ -178,7 +178,7 @@ $.getJSON(muniURL,
 				
 			});
 				overlayLayers["Towns"] = muniLayer;
-				muniLayer.addTo(map);
+				//muniLayer.addTo(map);
 				
 				
 			});
@@ -330,7 +330,7 @@ function displayThisAsset(a) {
 var points = [];
 var infoDisplay ='bibble';
 function displayAssets(data) {
-	var assets = new L.markerClusterGroup({disableClusteringAtZoom:'14'});
+	var assets = new L.markerClusterGroup();
 	for (i=0;i<=data.length-1;i++) {
 		if ((data[i].subdate != '') && (data[i].Lat !='#N/A') && (data[i].Lat !='#REF!')) {
 			var lat = data[i].Lat;
