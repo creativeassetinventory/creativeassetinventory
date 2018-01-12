@@ -342,6 +342,7 @@ function displayAssets(data) {
 					data: []
 				}
 			});
+			if (latlng != null) {
 			var marker = new assetMarker(latlng, {
 				radius: 10,
 				weight:2,
@@ -360,7 +361,8 @@ function displayAssets(data) {
 			marker.on("click", function(e) {
 				displayThisAsset(e);			
 			})
-			assets.addTo(map);		
+			assets.addTo(map);
+			}
 		}
 	var key = "<div class='key'>"+
 				"<div class= 'keyitem'>" + 
