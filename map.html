@@ -138,7 +138,7 @@ googleStr = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
 
 var stamenLabels = L.tileLayer('http://a.tile.stamen.com/toner-labels/{z}/{x}/{y}.png', {attribution: 'uses <a href="http://stamen.com">stamen</a> labels'});
 
-var = new L.layerGroup();
+var waterStreet = new L.layerGroup();
 waterStreet.addLayer(stamen)
 waterStreet.addLayer(stamenLabels);
 
