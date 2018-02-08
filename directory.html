@@ -165,16 +165,18 @@ function setupAssets(data) {
 	assetList=[];
 	$('#spinBox').show();
 	for (i=0;i<=data.length-1;i++) {
-		if ((data[i].subdate != '')) {
+		if ((data[i].subdate != ''&&data[i].a_type !='#REF!')) {
 			categorizeAsset(data[i]);
 			}
 		}
 	var q = 0;
+//	console.log(assetsByCategory);
 	for (x in assetsByCategory){
+//		console.log(x);
+		if (assetsByCategory[x][0] != undefined) {
 		assetsByCategory[x].sort(sortName);
 		var a_type = assetsByCategory[x][0].a_type;
 		var categoryname = 'category' + q;
-		console.log(categoryname);
 		document.getElementById("assetTableHolder").innerHTML+=
 			"<div class='assetCategoryTitle'>" +
 			"<table class='spacer' ></table>"+
@@ -186,6 +188,7 @@ function setupAssets(data) {
 			"</div>" ;
 		displayAssets(assetsByCategory[x],categoryname);
 		q++;
+		}
 	}
 }
 
@@ -212,7 +215,7 @@ function cleanLink(lk) {
 
 function displayAssets(k,c) {
 			assetList = k;
-			console.log(c);
+//			console.log(c);
 			var linkCleaned = '';
 			for (n=0; n<=assetList.length-1; n++) {
 				var websitespacer = '';
