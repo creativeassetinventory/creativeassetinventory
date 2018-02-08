@@ -329,7 +329,7 @@ function displayThisAsset(a) {
 var points = [];
 var infoDisplay ='bibble';
 function displayAssets(data) {
-	var assets = new L.markerClusterGroup();
+	var assets = new L.markerClusterGroup({disableClusteringAtZoom:16});
 	for (i=0;i<=data.length-1;i++) {
 		if ((data[i].subdate != '') && (data[i].Lat !='#N/A') && (data[i].Lat !='#REF!')) {
 			var lat = data[i].Lat;
@@ -356,6 +356,10 @@ function displayAssets(data) {
 			var content = 
 					"<b>"+ data[i].a_name + "</b>";
 			
+
+			assets.on('clusterclick', function (a) {
+				a.layer.spiderify;
+			});
 			marker.bindTooltip(content,{'maxWidth':'300px'});
 			marker.on("click", function(e) {
 				displayThisAsset(e);			
