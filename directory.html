@@ -15,8 +15,6 @@
    integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
    crossorigin=""></script>
  <script src="randomColor.min.js"></script>
- <script src="spin-js/spin.js"></script>
- <script src="spin-js/jquery.spin.js"></script>
  
    <!-- Tabletop to access Google spreadsheets - THANK YOU AMAZING HUMANS WHO CREATED THIS!! LOVE LOVE LOVE-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.1/tabletop.js"></script>
@@ -60,10 +58,9 @@
   <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="loadMenu()"><i class='fa fa-bars fa-lg'></i></a>
 </div>
 
-<h1>Assets Entered So Far</h1>
+<h1>Assets Entered So Far:<span id = "total" ><i id="spinnie" class="fa fa-spinner fa-spin" style="color:#f69729;"></i></span></h1>
 
 <div id="assetTableHolder" style="width:100%;"></div>
-<div id="spinBox" class='spinner'></div>
 <script type="text/javascript">
 
 function loadMenu() {
@@ -116,7 +113,6 @@ function getAssetColor(d) {
   }
   }
 
-var spinner = new Spinner().spin(spinBox);
 var assetList = [];
 var assetsByCategory = {"people":[], "businesses":[], "places":[], "institutions":[], "associations":[], "events":[], "supporting":[], "other":[]};
 
@@ -161,18 +157,17 @@ function displayCategory(q) {
 	}
 }
 
+var tally = 0;
 function setupAssets(data) {
 	assetList=[];
-	$('#spinBox').show();
 	for (i=0;i<=data.length-1;i++) {
 		if ((data[i].subdate != ''&&data[i].a_type !='#REF!')) {
+			tally+=1;
 			categorizeAsset(data[i]);
 			}
 		}
 	var q = 0;
-//	console.log(assetsByCategory);
 	for (x in assetsByCategory){
-//		console.log(x);
 		if (assetsByCategory[x][0] != undefined) {
 		assetsByCategory[x].sort(sortName);
 		var a_type = assetsByCategory[x][0].a_type;
@@ -190,6 +185,14 @@ function setupAssets(data) {
 		q++;
 		}
 	}
+	
+	replaceSpinner(tally);
+}
+
+function replaceSpinner(n) {
+	document.getElementById('total').innerHTML = n;
+	document.getElementById('spinnie').style.display = 'none';
+	document.getElementById('total').style.display = 'block';
 }
 
 function cleanLink(lk) {
@@ -271,11 +274,17 @@ function displayAssets(k,c) {
 -->				
 				var editCompile = '';
 				
+				var eventSetup = '';
+				if ((assetList[n].a_type == 'Cultural Events and Festivals') && (assetList[n].event_time != null)) {
+					eventSetup = "<br><b>WHEN: </b>"+ assetList[n].event_time + "<br>";
+				}
+				
 				var regularTitleSetup =  
 				"<div class='regularTitle'>" +
 				"<h4>" + assetList[n].a_name + "</h4>" +
 				locationCompile +
 				websiteCompile +
+				eventSetup +
 				"</div>";
 				
 				var mobileTitleSetup =  
@@ -283,6 +292,7 @@ function displayAssets(k,c) {
 				"<h4>" + assetList[n].a_name + "</h4>" +
 				locationCompile +
 				websiteCompile +
+				eventSetup +
 				"</div>";
 
 				var info = 	
@@ -306,8 +316,7 @@ function displayAssets(k,c) {
 				"</div>" ;
 			}
 	
-		$('#spinBox').hide();
-	
+
 }
 
 
