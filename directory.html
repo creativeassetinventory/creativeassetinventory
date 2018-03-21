@@ -229,6 +229,12 @@ function getSearchedAssets() {
 	console.log(result.length);
 	setupCategories(result);
 	replaceSpinner(result.length);
+	for (i=0;i<=7;i++){
+		cat = "category"+i;
+		if (document.getElementById(cat) != null) {
+			document.getElementById(cat).style.display = 'block';
+		};
+	}
 }
 
 function setupAssets(data) {
