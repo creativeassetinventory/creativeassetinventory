@@ -29,6 +29,9 @@
  <!-- Esri Leaflet Geocoder -->
     <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@2.2.6/dist/esri-leaflet-geocoder.css">
     <script src="https://unpkg.com/esri-leaflet-geocoder@2.2.6"></script>
+	
+ <!-- FUSE - thanks, Kiro -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.0.4/fuse.min.js"></script>
 
 
 <link rel="stylesheet" href="css/cai.css" />
@@ -49,6 +52,7 @@
 		<h1 style="color:#fff;">CREATIVE ASSETS INVENTORY</h1>
 	</div>
 </div>
+
 <div class="topnav" id="topMenu">
   <a href="survey.html">Add an Asset!</a>
   <a href="connect.html">Get Involved</a>
@@ -58,7 +62,9 @@
   <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="loadMenu()"><i class='fa fa-bars fa-lg'></i></a>
 </div>
 
-<h1>Assets Entered So Far:<span id = "total" ><i id="spinnie" class="fa fa-spinner fa-spin" style="color:#f69729;"></i></span></h1>
+<h1>Assets Found:<span id = "total"><i id='spinnie' class="fa fa-spinner fa-spin" style="color:#f69729;"></i></span></h1>
+<span style='font-family:"bebas_neuebold", sans-serif; font-size:100%; letter-spacing:.1em;color:#444;padding-right:15px;'>Search</span><input type="text" id="assetquery"><button type="button" onclick="getSearchedAssets()"><i class="fa fa-search" style="color:#f69729;"></i></button><button type="button" style='float:right;font-family:"bebas_neuebold", sans-serif; font-size:100%; letter-spacing:.1em;color:#444' onclick="displayAllAssets()">Show All Assets</button>
+<br><br>
 
 <div id="assetTableHolder" style="width:100%;"></div>
 <script type="text/javascript">
@@ -86,7 +92,6 @@ Tabletop.init({
     	simpleSheet: true,
     	debug: false
     });
-
 				
 function getAssetColor(d) {
   switch (d) {
@@ -158,8 +163,16 @@ function displayCategory(q) {
 }
 
 var tally = 0;
-function setupAssets(data) {
-	assetList=[];
+var dataJson;
+
+function displayAllAssets(){
+	setupCategories(allAssets);
+}
+
+function setupCategories(data) {
+	tally=0;
+	document.getElementById("assetTableHolder").innerHTML='';
+	assetsByCategory = {"people":[], "businesses":[], "places":[], "institutions":[], "associations":[], "events":[], "supporting":[], "other":[]};
 	for (i=0;i<=data.length-1;i++) {
 		if ((data[i].subdate != ''&&data[i].a_type !='#REF!')) {
 			tally+=1;
@@ -185,15 +198,49 @@ function setupAssets(data) {
 		q++;
 		}
 	}
-	
+	replaceSpinner(tally);
+
+}
+
+assetList=[];
+allAssets=[];
+
+function getSearchedAssets() {
+	var querystring = $('#assetquery').val();
+	len = querystring.length;
+	console.log(querystring);
+	var options = {
+		shouldSort: true,
+		threshold: 0.3,
+		location: 0,
+		distance: 100,
+		maxPatternLength: 32,
+		minMatchCharLength: len,
+		keys: [
+			"a_name",
+			"a_town",
+			"pub_add",
+			"c_occ",
+			"a_desc"
+		]
+	};
+	var fuse = new Fuse(allAssets, options); 
+	var result = fuse.search(querystring);
+	console.log(result.length);
+	setupCategories(result);
+	replaceSpinner(result.length);
+}
+
+function setupAssets(data) {
+	allAssets = data;
+	setupCategories(allAssets);	
 	replaceSpinner(tally);
 }
 
 function replaceSpinner(n) {
 	document.getElementById('total').innerHTML = n;
-	document.getElementById('spinnie').style.display = 'none';
-	document.getElementById('total').style.display = 'block';
 }
+
 
 function cleanLink(lk) {
 	var httpsFind = lk.search('https://');
