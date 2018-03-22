@@ -40,12 +40,21 @@
     <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@2.2.6/dist/esri-leaflet-geocoder.css">
     <script src="https://unpkg.com/esri-leaflet-geocoder@2.2.6"></script>
 
-
+ <!-- FUSE - thanks, Kiro -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.0.4/fuse.min.js"></script>
+	
 <link rel="stylesheet" href="css/cai.css" />
 
 
 
 <style>
+		.assetsearch {
+			background-color:#fff;
+			text-align: left;
+			line-height: 18px;
+			color: #555;
+			padding:2px;
+		}
 		
 </style>
 
@@ -151,6 +160,47 @@ function makeSatLabels(e) {
 }
 waterStreet.addTo(map);
 
+var assetSearch = L.control({position: 'bottomleft'});
+var assetSearchContent = "<b>Search</b> " + "<input type='text' id='assetquery'><button type='button' onclick='getSearchedAssets()'><i class='fa fa-search' style='color:#f69729;'></i></button>";
+
+var div = L.DomUtil.create('div', 'assetsearch');
+			assetSearch.onAdd = function (map) {
+				assetSearch.update();
+				return div;
+			}
+			
+			assetSearch.update = function() {
+				div.innerHTML = assetSearchContent;
+			}
+assetSearch.addTo(map);
+
+function getSearchedAssets() {
+	var querystring = $('#assetquery').val();
+	len = querystring.length;
+	console.log(querystring);
+	var options = {
+		shouldSort: true,
+		threshold: 0.2,
+		location: 0,
+		distance: 50,
+		maxPatternLength: 32,
+		minMatchCharLength: len,
+		keys: [
+			"a_name",
+			"a_type",
+			"a_town",
+			"pub_add",
+			"c_occ",
+			"a_desc"
+		]
+	};
+	var fuse = new Fuse(allAssets, options); 
+	var output = fuse.search(querystring);
+	console.log(output.length);
+	displayQuery(output);
+}
+
+
 var muniURL = encodeURI("https://creativeassetinventory.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM munis where county = 'HUNTERDON'");
 <!-- var parcelURL = encodeURI("https://creativeassetinventory.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM parcels where city like '%STOCKTON%' or city like '%FRENCHTOWN%' or city like '%HOLLAND%' or city like '%KINGWOOD%' or city like '%LAMBERTVILLE%' or city like '%CLINTON%' "); 
 -->
@@ -198,6 +248,7 @@ $.getJSON(muniURL,
 
 loadAssets();
 var infoSidebarOn = false;
+var layerControlOn = false;
 				
 
 
@@ -328,7 +379,75 @@ function displayThisAsset(a) {
   
 var points = [];
 var infoDisplay ='bibble';
+var initLoad = 0;
+var hasQueryLayer = false;
+var queryLayer = new L.markerClusterGroup({});
+
+
+function displayQuery(data){
+	queryLayer = new L.markerClusterGroup({});
+	if (hasQueryLayer = true) {
+		queryLayer.removeFrom(map);
+		hasQueryLayer = false;
+	}
+	for (i=0;i<=data.length-1;i++) {
+		if ((data[i].subdate != '') && (data[i].Lat !='#N/A') && (data[i].Lat !='#REF!')) {
+			var lat = data[i].Lat;
+			var lng = data[i].Lng;
+			var latlng = [lat,lng];
+			var atype = data[i].a_type;
+			assetMarker = L.CircleMarker.extend({
+				options:{
+					data: []
+				}
+			});
+			if ((latlng != null)&&(lat != 'Loading...') && (lat != '#N/A')) {
+			var marker = new assetMarker(latlng, {
+				radius: 10,
+				weight:4,
+				color:"#000",
+				opacity:.7,
+				fillOpacity: 0.7,
+				fillColor:getAssetColor(atype),
+				data: data[i]
+				});
+			queryLayer.addLayer(marker);
+			marker.bringToFront();
+			
+			var content = 
+					"<b>"+ data[i].a_name + "</b>";
+			
+
+			marker.bindTooltip(content,{'maxWidth':'300px'});
+
+			marker.on("click", function(e) {
+				L.DomEvent.stop(e);
+				displayThisAsset(e);			
+			})
+			queryLayer.addTo(map);
+			map.fitBounds(queryLayer.getBounds());
+			if (map.hasLayer(stamen)){
+				stamen.redraw();
+			}
+			if (map.hasLayer(googleSat)){
+				googleSat.redraw();
+			}
+			if (map.hasLayer(stamenstreets)){
+				stamenstreets.redraw();
+			}
+			queryLayer.bringToFront();
+			hasQueryLayer = true;
+			}
+		}
+ }
+}
+
 function displayAssets(data) {
+	if (initLoad == 0) {
+		allAssets = data;
+		initLoad = 1;
+	}
+	
 	var assets = new L.markerClusterGroup({disableClusteringAtZoom:16});
 	for (i=0;i<=data.length-1;i++) {
 		if ((data[i].subdate != '') && (data[i].Lat !='#N/A') && (data[i].Lat !='#REF!')) {
@@ -361,7 +480,17 @@ function displayAssets(data) {
 				a.layer.spiderify;
 			});
 			marker.bindTooltip(content,{'maxWidth':'300px'});
+			if (map.hasLayer(stamen)){
+				stamen.redraw();
+			}
+			if (map.hasLayer(googleSat)){
+				googleSat.redraw();
+			}
+			if (map.hasLayer(stamenstreets)){
+				stamenstreets.redraw();
+			}
 			marker.on("click", function(e) {
+				L.DomEvent.stop(e);
 				displayThisAsset(e);			
 			})
 			assets.addTo(map);
@@ -404,7 +533,10 @@ function displayAssets(data) {
 				
 	overlayLayers["Assets"] = assets;
 	}
-L.control.layers(bases, overlayLayers, {position:'topleft'}).addTo(map);
+if (layerControlOn = false){
+	L.control.layers(bases, overlayLayers, {position:'topleft'}).addTo(map);	
+	layerControlOn = true;
+}
 document.getElementById('mapkey').innerHTML = key;
 //L.control.layers('',assetOverlay, {position:'bottomleft',collapsed:false}).addTo(map);
 	
@@ -433,7 +565,6 @@ map.on('click', function (e) {
 
 	var esriGeo = L.esri.Geocoding.reverseGeocode().latlng([lat, lng]).run(function(error, result, response){
 	var codeAddress = '';
-	console.log(result.address.Addr_type);
 		if (result.address.Addr_type == 'POI') {
 			codeAddress = result.address.LongLabel;
 		}
