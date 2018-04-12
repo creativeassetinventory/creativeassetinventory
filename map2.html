@@ -28,6 +28,9 @@
 <link rel="stylesheet" href="leaflet-sidebar/L.Control.Sidebar.css" />
     <script src="leaflet-sidebar/L.Control.Sidebar.js"></script>
 	<script src="button/leaflet-button.js"></script>
+ <!-- Fullscreen -->
+  <link href='leaflet-fullscreen/leaflet.fullscreen.css' rel='stylesheet' />
+  <script src='leaflet-fullscreen/Leaflet.fullscreen.min.js'></script>
   
  <!-- FontAaaawwwwesome -->  
   <script src="https://use.fontawesome.com/0a9a58d8dc.js"></script>  
@@ -97,10 +100,9 @@ function loadMenu() {
 
 
 var map = L.map('mapdiv',{
-  fullscreenControl: true,
-  fullscreenControlOptions: {
-    position: 'topleft'
-  }
+    fullscreenControl: {
+        pseudoFullscreen: false
+    }
 } ).setView([40.526388, -75.060482], 15);
 
 var searchControl = L.esri.Geocoding.geosearch().addTo(map);
