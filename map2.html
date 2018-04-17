@@ -295,7 +295,7 @@ function displayThisAsset(a) {
 				var websiteCompile = '';
 				
 				if ((linkCleaned != '')) {
-					websiteCompile = 	"<a style='line-height:1.5em;margin-bottom:3px;' href='"+ linkCleaned +"'>" + info.website + "</a><br>";
+					websiteCompile = 	"<a style='line-height:1.5em;margin-bottom:3px;' target = '_blank' href='"+ linkCleaned +"'>" + info.website + "</a><br>";
 				}
 				else {websiteCompile = '';}
 				
@@ -563,7 +563,7 @@ map.on('click', function (e) {
  		function setPopup() {
 			
 				popupContent = "<b>" + codeAddress + "</b><hr>" +
-					"<h1><a style='text-decoration:none' target='blank' href='"+ jotLink + "'>ADD AN ASSET!</a></h1>" ;
+					"<h1><a style='text-decoration:none' target='_blank' href='"+ jotLink + "'>ADD AN ASSET!</a></h1>" ;
 				}			
 				setPopup();
 			popup.setContent(popupContent);
