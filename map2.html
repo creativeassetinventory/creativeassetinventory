@@ -62,13 +62,12 @@
 <body>
 
 <div id='spinContainer' style="color:#000; width:100%; height:100%; position:fixed; background-color:rgba(255,255,255, 0.5); z-index:100;display:'block';">
- <h2><i class="fa fa-spinner fa-pulse fa-lg fa-fw"></i><span style="padding-left:5px">Loading...</span></h2>
+ <h2><i class="fa fa-spinner fa-pulse fa-lg fa-fw" style="padding-right:5px;"></i>Loading...</h2>
 </div>
 <div id="mapdiv" style="width: 100%; height: 500px; position:fixed;"></div>
 <div id="mapkey" style="width:100%"></div>
 
 <script type="text/javascript">
-
 function loadMenu() {
     var x = document.getElementById("topMenu");
     if (x.className === "topnav") {
@@ -77,23 +76,17 @@ function loadMenu() {
         x.className = "topnav";
     }
 }
-
 // General note: TABLETOP, I love you. LOVE YOU.
-
-
 var map = L.map('mapdiv',{
     fullscreenControl: {
         pseudoFullscreen: false
     }
-} ).setView([40.526388, -75.060482], 15);
+} );
+loadAssets();
 
 var searchControl = L.esri.Geocoding.geosearch().addTo(map);
-
-
-
     // create an empty layer group to store the results and add it to the map
     var results = L.layerGroup().addTo(map);
-
     // listen for the results event and add every result to the map
     searchControl.on("results", function(data) {
         results.clearLayers();
@@ -101,7 +94,6 @@ var searchControl = L.esri.Geocoding.geosearch().addTo(map);
             results.addLayer(L.marker(data.results[i].latlng));
         }
     });
-
   var info_sidebar = document.createElement('div');
   info_sidebar.id = "infoSidebar";
   info_sidebar.class = "sidebar";
@@ -111,42 +103,31 @@ var searchControl = L.esri.Geocoding.geosearch().addTo(map);
       position: 'right'
   });
 	map.addControl(infoSidebar);
-
-
 var stamen = L.tileLayer(' https://stamen-tiles.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.png', {attribution: 'uses a <a href="http://stamen.com">stamen</a> basemap'});
 var stamenstreets = L.tileLayer(' https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png', {attribution: 'uses a <a href="http://stamen.com">stamen</a> basemap'});
-
-
 googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
 	maxZoom: 20,
     subdomains:['mt0','mt1','mt2','mt3'],
 	attribution: 'uses google satellite'
 });
-
 googleStr = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
 	maxZoom: 20,
     subdomains:['mt0','mt1','mt2','mt3'],
 	attribution: 'uses google streets'
 });
-
 var stamenLabels = L.tileLayer(' https://stamen-tiles.a.ssl.fastly.net/toner-labels/{z}/{x}/{y}.png', {attribution: 'uses <a href="http://stamen.com">stamen</a> labels'});
-
 var waterStreet = new L.layerGroup();
 waterStreet.addLayer(stamen)
 waterStreet.addLayer(stamenLabels);
-
 var satLabel = new L.layerGroup();
 makeSatLabels(satLabel);
-
 function makeSatLabels(e) {
 	e._layers[36] = googleSat;
 	satLabel.addLayer(stamenLabels);
 }
 waterStreet.addTo(map);
-
 var assetSearch = L.control({position: 'bottomleft'});
 var assetSearchContent = "<b>Search</b> " + "<input type='text' id='assetquery'><button type='button' onclick='getSearchedAssets()'><i class='fa fa-search' style='color:#f69729;'></i></button>";
-
 var div = L.DomUtil.create('div', 'assetsearch');
 			assetSearch.onAdd = function (map) {
 				assetSearch.update();
@@ -157,7 +138,6 @@ var div = L.DomUtil.create('div', 'assetsearch');
 				div.innerHTML = assetSearchContent;
 			}
 assetSearch.addTo(map);
-
 function getSearchedAssets() {
 	var querystring = $('#assetquery').val();
 	len = querystring.length;
@@ -183,20 +163,16 @@ function getSearchedAssets() {
 	console.log(output.length);
 	displayQuery(output);
 }
-
-
 var muniURL = encodeURI("https://creativeassetinventory.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM munis where county = 'HUNTERDON'");
 <!-- var parcelURL = encodeURI("https://creativeassetinventory.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM parcels where city like '%STOCKTON%' or city like '%FRENCHTOWN%' or city like '%HOLLAND%' or city like '%KINGWOOD%' or city like '%LAMBERTVILLE%' or city like '%CLINTON%' "); 
 -->
-
 var assetURL = encodeURI("https://creativeassetinventory.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM cai_public");
 <!-- console.log(parcelURL); -->
-
 var bases = { "Watercolor": waterStreet, "BW Streets": stamenstreets, "Streets": googleStr, "Satellite": satLabel};
-
 overlayLayers = {}; 
 		<!-- don't forget to add any new layers to the menu! -->		
 assetOverlay={};
+<!-- 
 muniLayer = new L.geoJson();
 
 $.getJSON(muniURL,
@@ -206,7 +182,6 @@ $.getJSON(muniURL,
 				style: style,
 				interactive: false,
 				onEachFeature: function (feature, layer) {
-
 				}
 				
 			});
@@ -215,7 +190,6 @@ $.getJSON(muniURL,
 				
 				
 			});
-
 		
 			function style(feature) {
 			var randColor = randomColor({hue: 'yellow'});						
@@ -227,15 +201,11 @@ $.getJSON(muniURL,
 					fillColor: randColor,
 				};
 			}
+-->
 
-
-
-loadAssets();
 var infoSidebarOn = false;
 var layerControlOn = false;
 				
-
-
 function getAssetColor(d) {
   switch (d) {
     case 'Space or Facility (includes vacant spaces)':
@@ -260,7 +230,6 @@ function getAssetColor(d) {
       return '#FFEDA0';
   }
   }
-
 function cleanLink(lk) {
 	var httpsFind = lk.search('https://');
 	cleaned = '';
@@ -280,13 +249,10 @@ function cleanLink(lk) {
 	else cleaned = lk;
 	return cleaned;
 }
-
 function displayThisAsset(a) {
 			var info = a.target.options.data;
 			atype = info.a_type;	
-
 			var linkCleaned = '';
-
 				if (info.website != '') {
 					linkCleaned = cleanLink(info.website);
 				}
@@ -313,7 +279,6 @@ function displayThisAsset(a) {
 						"</b>" + 
 						"</br>";
 					}
-
 			var titleSetup = 
 			"<b>" + "<i style='padding-right:5px; color:" + getAssetColor(atype) + ";' class='fa fa-circle'></i>" + info.a_type + "</b>" +
 			"<hr>" +
@@ -335,7 +300,6 @@ function displayThisAsset(a) {
 				}
 				
 			
-
 				var all = 	
 				titleSetup +
 				picSetup +				
@@ -358,7 +322,6 @@ function displayThisAsset(a) {
 					infoSidebarOn = true;
 				}
 	
-
 }
   
 var points = [];
@@ -366,8 +329,6 @@ var infoDisplay ='bibble';
 var initLoad = 0;
 var hasQueryLayer = false;
 var queryLayer = new L.markerClusterGroup({});
-
-
 function displayQuery(data){
 	queryLayer = new L.markerClusterGroup({});
 	if (hasQueryLayer = true) {
@@ -401,9 +362,7 @@ function displayQuery(data){
 			var content = 
 					"<b>"+ data[i].a_name + "</b>";
 			
-
 			marker.bindTooltip(content,{'maxWidth':'300px'});
-
 			marker.on("click", function(e) {
 				L.DomEvent.stop(e);
 				displayThisAsset(e);			
@@ -459,7 +418,6 @@ function displayAssets(data) {
 			var content = 
 					"<b>"+ data[i].a_name + "</b>";
 			
-
 			assets.on('clusterclick', function (a) {
 				a.layer.spiderify;
 			});
@@ -526,11 +484,9 @@ document.getElementById('mapkey').innerHTML = key;
 document.getElementById('spinContainer').style.display="none";
 map.fitBounds(assets.getBounds());
 }
-
-
-		
+	
+	
 function loadAssets() {
-
 Tabletop.init({
     	key: "https://docs.google.com/spreadsheets/d/1l9w9WBksn5WEyKkZIHnnal19YjJ9Y_JN2NmxH7az-20/edit?usp=sharing",
     	callback: displayAssets,
@@ -546,7 +502,6 @@ map.on('click', function (e) {
 	
 	var popup = new L.popup({maxWidth:'140'}).setLatLng(e.latlng);
 	addStripped='';
-
 	var esriGeo = L.esri.Geocoding.reverseGeocode().latlng([lat, lng]).run(function(error, result, response){
 	var codeAddress = '';
 		if (result.address.Addr_type == 'POI') {
@@ -557,7 +512,6 @@ map.on('click', function (e) {
 			codeAddress = result.address.Match_addr;
 		}
 		jotLink='https://form.jotform.us/72586059140155?fullAddress='+codeAddress+'&Lat='+lat+'&Lng='+lng;
-
  		function setPopup() {
 			
 				popupContent = "<b>" + codeAddress + "</b><hr>" +
@@ -570,13 +524,13 @@ map.on('click', function (e) {
 			
 		});
 }
-
 			
-
 	
 </script> 
   
 
 </body>
 </html>
+
+
 
