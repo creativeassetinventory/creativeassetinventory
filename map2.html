@@ -15,8 +15,6 @@
    integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
    crossorigin=""></script>
  <script src="randomColor.min.js"></script>
- <script src="spin-js/spin.js"></script>
- <script src="spin-js/jquery.spin.js"></script>
  <script src="http://maps.stamen.com/js/tile.stamen.js"></script>
 <script src="MQ-geocode/mq-map.js"></script>
  <script src="MQ-geocode/mq-geocoding.js"></script>
@@ -65,7 +63,7 @@
 	
 <body>
 
-
+<div id='spinContainer' style="width: 40%; height:40%" position:"absolute 50px 50px" display:'none'><i class="fas fa-spinner fa-pulse fa-7x"></i></div>
 <div id="mapdiv" style="width: 100%; height: 500px;"></div>
 <div id="mapkey" style="width:100%"></div>
 
@@ -525,13 +523,15 @@ if (layerControlOn = false){
 }
 document.getElementById('mapkey').innerHTML = key;
 //L.control.layers('',assetOverlay, {position:'bottomleft',collapsed:false}).addTo(map);
-	
+document.getElementById('spinContainer').style.display('none');
 map.fitBounds(assets.getBounds());
 }
 
 
 		
 function loadAssets() {
+	
+document.getElementById('spinContainer').style.display='block';
 
 Tabletop.init({
     	key: "https://docs.google.com/spreadsheets/d/1l9w9WBksn5WEyKkZIHnnal19YjJ9Y_JN2NmxH7az-20/edit?usp=sharing",
