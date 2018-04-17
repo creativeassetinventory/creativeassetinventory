@@ -112,8 +112,8 @@ var searchControl = L.esri.Geocoding.geosearch().addTo(map);
 	map.addControl(infoSidebar);
 
 
-var stamen = L.tileLayer('http://a.tile.stamen.com/watercolor/{z}/{x}/{y}.png', {attribution: 'uses a <a href="http://stamen.com">stamen</a> basemap'});
-var stamenstreets = L.tileLayer('http://a.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {attribution: 'uses a <a href="http://stamen.com">stamen</a> basemap'});
+var stamen = L.tileLayer('https://a.tile.stamen.com/watercolor/{z}/{x}/{y}.png', {attribution: 'uses a <a href="http://stamen.com">stamen</a> basemap'});
+var stamenstreets = L.tileLayer('https://a.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {attribution: 'uses a <a href="http://stamen.com">stamen</a> basemap'});
 
 
 googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
@@ -128,7 +128,7 @@ googleStr = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
 	attribution: 'uses google streets'
 });
 
-var stamenLabels = L.tileLayer('http://a.tile.stamen.com/toner-labels/{z}/{x}/{y}.png', {attribution: 'uses <a href="http://stamen.com">stamen</a> labels'});
+var stamenLabels = L.tileLayer('https://a.tile.stamen.com/toner-labels/{z}/{x}/{y}.png', {attribution: 'uses <a href="http://stamen.com">stamen</a> labels'});
 
 var waterStreet = new L.layerGroup();
 waterStreet.addLayer(stamen)
