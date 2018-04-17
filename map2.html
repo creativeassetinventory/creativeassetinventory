@@ -128,7 +128,7 @@ googleStr = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
 	attribution: 'uses google streets'
 });
 
-var stamenLabels = L.tileLayer(' https://stamen-tiles.a.ssl.fastly.net/{z}/{x}/{y}.png', {attribution: 'uses <a href="http://stamen.com">stamen</a> labels'});
+var stamenLabels = L.tileLayer(' https://stamen-tiles.a.ssl.fastly.net/toner-labels/{z}/{x}/{y}.png', {attribution: 'uses <a href="http://stamen.com">stamen</a> labels'});
 
 var waterStreet = new L.layerGroup();
 waterStreet.addLayer(stamen)
