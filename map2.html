@@ -160,7 +160,6 @@ function getSearchedAssets() {
 	};
 	var fuse = new Fuse(allAssets, options); 
 	var output = fuse.search(querystring);
-	console.log(output.length);
 	displayQuery(output);
 }
 var muniURL = encodeURI("https://creativeassetinventory.carto.com/api/v2/sql?format=GeoJSON&q=SELECT * FROM munis where county = 'HUNTERDON'");
@@ -172,8 +171,7 @@ var bases = { "Watercolor": waterStreet, "BW Streets": stamenstreets, "Streets":
 overlayLayers = {}; 
 		<!-- don't forget to add any new layers to the menu! -->		
 assetOverlay={};
-<!-- 
-muniLayer = new L.geoJson();
+<!-- muniLayer = new L.geoJson();
 
 $.getJSON(muniURL,
             function(data) {
@@ -531,6 +529,8 @@ map.on('click', function (e) {
 
 </body>
 </html>
+
+
 
 
 
