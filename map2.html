@@ -54,68 +54,6 @@
 
 
 <style>
-		.assetsearch {
-			background-color:#fff;
-			text-align: left;
-			line-height: 18px;
-			color: #555;
-			padding:2px;
-		}	
-
-		.animation-wrapper{
-		  height:100px;		  
-		  width:100px; 
-		  padding:20px; 
-		  margin: -2.5em 0 0 -2.5em;
-		  color:#111;
-		  font-family: 'Roboto', sans-serif;
-		  text-align:center;
-		  text-transform:uppercase;
-		  font-weight:500;
-		  z-index:100;
-		  position:fixed;
-			top:10%;
-			left:45%
-		}
-  
-	  .fa-animation{
-		height:70px; 
-		width:70px; 
-		margin:0 auto;
-		position:relative;
-		z-index:300;
-	  }
-	  
-	  .fa-animation .fa{position:absolute;z-index:300}
-	  
-	  .fa-animation	.fa-lg{font-size:45px; top:8px; left:0px;}
-	  .fa-animation .fa-md{font-size:30px; top:0px; left:40px;}
-	  .fa-animation	.fa-sm{font-size:24px; top:30px; left:35px;}
-
-.fa-spin-reverse {
-  -webkit-animation: fa-spin-reverse 2s infinite linear;
-  animation: fa-spin-reverse 2s infinite linear;
-}
-@-webkit-keyframes fa-spin-reverse {
-  100% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  0% {
-    -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
-}
-@keyframes fa-spin-reverse {
-  100% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  0% {
-    -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
-}
 		
 </style>
 
@@ -129,7 +67,7 @@
         <i class="fa fa-cog fa-md fa-spin-reverse"></i>
         <i class="fa fa-cog fa-sm fa-spin"></i>
 	  </div>
-	    <b>Mapping...</b>
+	  <h2 style='margin-top:-5px;'>Mapping!</h2>
     </div>
 </div>
 <div id="mapdiv" style="width: 100%; height: 500px; position:fixed;"></div>
@@ -374,7 +312,7 @@ function displayThisAsset(a) {
 			
 			
 			var infoDisplay = 
-			 "<i class='fa fa-times fa-lg' style='float:right' onClick='infoSidebar.toggle();infoSidebarOn=false;' ></i>" +
+			 "<i class='fa fa-times fa-lg' style='float:right;margin-right:5%' onClick='infoSidebar.toggle();infoSidebarOn=false;' ></i>" +
 			 all ;
 			
 			
@@ -593,7 +531,3 @@ map.on('click', function (e) {
 
 </body>
 </html>
-
-
-
-
