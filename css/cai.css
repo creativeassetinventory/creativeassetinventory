@@ -103,7 +103,6 @@ height:auto !important;
 #spinBox {
     z-index:999;
     opacity:0.5;
-    display:none;
     border-radius:0.25em;
     width:5em;
     height:5em;
@@ -219,7 +218,7 @@ padding-right:10px;
 }
 
 #infoSidebar {
-	padding:8px;
+	padding:5%;
 }
 
 .editlink {float:left;font-family:"bebas_neuebold", sans-serif; font-size:100%; letter-spacing:.1em;color:#444;}
@@ -253,6 +252,70 @@ padding-right:10px;
 .pagesidebar {width:33%; float:right;padding-left:10px;}
 .mainpage{width:65%;float:left;}
 
+		.assetsearch {
+			background-color:#fff;
+			text-align: left;
+			line-height: 18px;
+			color: #555;
+			padding:2px;
+		}	
+
+		.animation-wrapper{
+		  height:100px;		  
+		  width:100px; 
+		  padding:20px; 
+		  margin: -2.5em 0 0 -2.5em;
+		  color:#111;
+		  font-family: 'Roboto', sans-serif;
+		  text-align:center;
+		  text-transform:uppercase;
+		  font-weight:500;
+		  z-index:100;
+		  position:fixed;
+			top:10%;
+			left:50%
+		}
+  
+	  .fa-animation{
+		height:70px; 
+		width:70px; 
+		margin:0 auto;
+		position:relative;
+		z-index:300;
+	  }
+	  
+	  .fa-animation .fa{position:absolute;z-index:300}
+	  
+	  .fa-animation	.fa-lg{font-size:45px; top:8px; left:0px;}
+	  .fa-animation .fa-md{font-size:30px; top:0px; left:40px;}
+	  .fa-animation	.fa-sm{font-size:24px; top:30px; left:35px;}
+
+.fa-spin-reverse {
+  -webkit-animation: fa-spin-reverse 2s infinite linear;
+  animation: fa-spin-reverse 2s infinite linear;
+}
+@-webkit-keyframes fa-spin-reverse {
+  100% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  0% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes fa-spin-reverse {
+  100% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  0% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+
 @media screen and (max-width: 800px) {
 	#mapdiv{height:350px;}
 	body {font-size:90%;padding:5px;}
@@ -268,6 +331,7 @@ padding-right:10px;
 	.assetCategoryTitle { padding-left:3px;}
 		.pagesidebar{width:100%;}
 	.mainpage{width:100%}
+.animation-wrapper{left:45%}
   
   }
 
@@ -281,9 +345,8 @@ padding-right:10px;
 @media screen and (max-width: 500px) {
 	.mobileTitle {display:block}
 	.regularTitle{display:none}
+.animation-wrapper{left:40%}
 
 } 
   
 }
-
-
