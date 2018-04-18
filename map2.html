@@ -49,6 +49,8 @@
 	
 <link rel="stylesheet" href="css/cai.css" />
 
+<!-- stole a spinner! -->
+
 
 
 <style>
@@ -58,15 +60,77 @@
 			line-height: 18px;
 			color: #555;
 			padding:2px;
-		}		
+		}	
+
+		.animation-wrapper{
+		  height:100px;		  
+		  width:100px; 
+		  padding:20px; 
+		  margin: -2.5em 0 0 -2.5em;
+		  color:#111;
+		  font-family: 'Roboto', sans-serif;
+		  text-align:center;
+		  text-transform:uppercase;
+		  font-weight:500;
+		  z-index:100;
+		  position:fixed;
+			top:10%;
+			left:45%
+		}
+  
+	  .fa-animation{
+		height:70px; 
+		width:70px; 
+		margin:0 auto;
+		position:relative;
+		z-index:300;
+	  }
+	  
+	  .fa-animation .fa{position:absolute;z-index:300}
+	  
+		.fa-lg{font-size:45px; top:8px; left:0px;}
+		.fa-md{font-size:30px; top:0px; left:40px;}
+		.fa-sm{font-size:24px; top:30px; left:35px;}
+
+.fa-spin-reverse {
+  -webkit-animation: fa-spin-reverse 2s infinite linear;
+  animation: fa-spin-reverse 2s infinite linear;
+}
+@-webkit-keyframes fa-spin-reverse {
+  100% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  0% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes fa-spin-reverse {
+  100% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  0% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+		
 </style>
 
 </head>				
 	
 <body>
-
-<div id='spinContainer' style="color:#000; width:100%; height:100%; position:fixed; background-color:rgba(255,255,255, 0.5); z-index:100;display:'block';">
- <h2><i class="fa fa-spinner fa-pulse fa-lg fa-fw" style="padding-right:5px;"></i>Loading...</h2>
+	<div id="spinContainer" style="width:100%;height:100%; opacity:0.5;background-color:#fff;position:fixed;z-index:50;">
+    <div class="animation-wrapper">
+      <div class="fa-animation">
+        <i class="fa fa-cog fa-lg fa-spin"></i>
+        <i class="fa fa-cog fa-md fa-spin-reverse"></i>
+        <i class="fa fa-cog fa-sm fa-spin"></i>
+	  </div>
+	  Mapping...
+    </div>
 </div>
 <div id="mapdiv" style="width: 100%; height: 500px; position:fixed;"></div>
 <div id="mapkey" style="width:100%"></div>
@@ -87,7 +151,6 @@ var map = L.map('mapdiv',{
     }
 } );
 loadAssets();
-
 var searchControl = L.esri.Geocoding.geosearch().addTo(map);
     // create an empty layer group to store the results and add it to the map
     var results = L.layerGroup().addTo(map);
@@ -176,7 +239,6 @@ overlayLayers = {};
 		<!-- don't forget to add any new layers to the menu! -->		
 assetOverlay={};
 <!-- muniLayer = new L.geoJson();
-
 $.getJSON(muniURL,
             function(data) {
 			
@@ -204,7 +266,6 @@ $.getJSON(muniURL,
 				};
 			}
 -->
-
 var infoSidebarOn = false;
 var layerControlOn = false;
 				
@@ -386,7 +447,6 @@ function displayQuery(data){
 		}
  }
 }
-
 function displayAssets(data) {
 	if (initLoad == 0) {
 		allAssets = data;
@@ -533,7 +593,6 @@ map.on('click', function (e) {
 
 </body>
 </html>
-
 
 
 
