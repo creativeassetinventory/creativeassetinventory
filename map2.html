@@ -391,7 +391,7 @@ function displayAssets(data) {
 		initLoad = 1;
 	}
 	
-	var assets = new L.markerClusterGroup({disableClusteringAtZoom:16});
+	var assets = new L.markerClusterGroup();
 	for (i=0;i<=data.length-1;i++) {
 		if ((data[i].subdate != '') && (data[i].Lat !='#N/A') && (data[i].Lat !='#REF!')) {
 			var lat = data[i].Lat;
